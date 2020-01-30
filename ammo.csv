@@ -1,0 +1,117 @@
+12 Gauge,5.25mm Buckshot,34,1,15,0
+12 Gauge,"8.5mm Buckshot ""Magnum""",44,2,26,0
+12 Gauge,"6.5mm Buckshot ""Express""",29,3,26,0
+12 Gauge,7mm Buckshot,32,3,26,0
+12 Gauge,Flechette,19,28,26,0
+12 Gauge Slugs,RIP Slug,235,0,11,0
+12 Gauge Slugs,Superformance HP Slug,190,2,12,0
+12 Gauge Slugs,Grizzly 40 Slug,170,12,48,0
+12 Gauge Slugs,HP Copper Sabot Premier,160,13,46,0
+12 Gauge Slugs,Led Slug,147,15,45,0
+12 Gauge Slugs,Dual Sabot Slug,75,17,65,0
+12 Gauge Slugs,"Slug ""Poleva-3""",130,17,40,0
+12 Gauge Slugs,FTX Custom Lite Slug,153,18,50,0
+12 Gauge Slugs,"Slug ""Poleva-6u""",140,20,50,15
+12 Gauge Slugs,Shell With .50 BMG (Tracer),177,23,57,5
+12 Gauge Slugs,AP 20 Slug,164,32,65,3
+20 Gauge,5.6mm Buckshot,25,1,12,0
+20 Gauge,6.2mm Buckshot,21,2,13,0
+20 Gauge,7.5mm Buckshot,24,3,14,0
+20 Gauge,7.3mm Buckshot,22,3,13,0
+20 Gauge Slugs,Devastator Slug,188,4,13,0
+20 Gauge Slugs,"Slug ""Poleva-3""",110,14,35,0
+20 Gauge Slugs,Star Slug,134,16,42,0
+20 Gauge Slugs,"Slug ""Poleva-6u""",120,17,40,0
+9x18mm,SP8,67,1,2,0
+9x18mm,SP7,77,2,5,0
+9x18mm,PSV,69,3,5,0
+9x18mm,P gzh,50,5,16,0
+9x18mm,PSO gzh,54,5,13,0
+9x18mm,PS gs PPO,55,6,16,0
+9x18mm,PRS gs,58,6,16,0
+9x18mm,PPE gzh,61,7,15,0
+9x18mm,PPT gzh,59,8,22,0
+9x18mm,PST gzh,50,12,26,0
+9x18mm,RG028 gzh,65,13,26,0
+9x18mm,BZT gzh,55,16,28,0
+9x18mm,PBM,44,22,30,16
+9x18mm,PMM,56,25,33,17
+7.62x25mm,LRNPC,66,5,27,0
+7.62x25mm,LRN,64,6,28,0
+7.62x25mm,FMJ43,60,8,29,0
+7.62x25mm,akbs,58,9,32,0
+7.62x25mm,P Gl,58,10,32,0
+7.62x25mm,T Gzh (Tracer),60,12,34,0
+7.62x25mm,Pst gzh,50,24,36,20
+9x19mm,RIP,102,2,11,0
+9x19mm,PSO gzh,56,10,32,0
+9x19mm,Luger CCI,70,10,38,0
+9x19mm,Green Tracer,58,14,33,0
+9x19mm,PST gzh,54,18,33,0
+9x19mm,AP 6.3,52,25,48,5
+9x21mm,sp12,75,14,63,0
+9x21mm,sp11,70,16,44,0
+9x21mm,sp10,49,32,46,20
+9x21mm,sp13,62,36,47,20
+5.7x28 mm,r37f,98,8,7,0
+5.7x28 mm,ss198lf,74,10,15,0
+5.7x28 mm,r37x,81,11,14,0
+5.7x28 mm,ss197sr,62,20,22,50
+5.7x28 mm,ss190,57,32,43,20
+5.7x28 mm,l191 (Tracer),58,33,41,20
+5.7x28 mm,sb193,54,35,37,20
+4.6x30 mm,Action SX,65,13,39,0
+4.6x30 mm,FMJ SX,43,30,41,20
+4.6x30 mm,Subsonic SX,41,34,46,20
+4.6x30 mm,AP SX,35,47,46,10
+9x39mm,sp5,68,35,52,20
+9x39mm,sp6,58,43,60,10
+9x39mm,SPP,67,45,56,20
+9x39mm,BP,60,50,68,10
+0.366,Geksa,80,14,38,0
+0.366,FMJ,73,20,36,25
+0.366,EKO,65,30,38,20
+5.45x39 mm,SP,68,11,34,0
+5.45x39 mm,HP,74,11,20,0
+5.45x39 mm,PRS,60,14,29,0
+5.45x39 mm,US,65,15,34,0
+5.45x39 mm,FMJ,54,20,30,25
+5.45x39 mm,T (Tracer),57,20,38,16
+5.45x39 mm,PS,50,25,35,40
+5.45x39 mm,PP,46,30,32,17
+5.45x39 mm,BP,48,32,41,16
+5.45x39 mm,BT (Tracer),44,37,49,16
+5.45x39 mm,BS,40,51,57,17
+5.45x39 mm,7n39,37,62,60,2
+5.56x45 mm,Warmage,85,3,14,0
+5.56x45 mm,55_HP,75,9,22,0
+5.56x45 mm,MK_255_Mod_0,60,17,32,0
+5.56x45 mm,M856 (Tracer),55,23,34,33
+5.56x45 mm,FMJ,52,24,33,50
+5.56x45 mm,M855,49,26,37,40
+5.56x45 mm,M856A1 (Tracer),51,37,52,33
+5.56x45 mm,M855A1,44,40,52,34
+5.56x45 mm,M995,41,53,58,32
+7.62x39 mm,HP,83,15,35,0
+7.62x39 mm,US,56,29,42,8
+7.62x39 mm,T45M (Tracer),62,31,46,12
+7.62x39 mm,PS,54,34,52,25
+7.62x39 mm,BP,58,47,63,12
+7.62x51 mm,Ultra Nosler,102,15,20,0
+7.62x51 mm,BPZ FMJ,88,31,33,25
+7.62x51 mm,TPZ SP,60,36,40,20
+7.62x51 mm,M80,80,41,66,17
+7.62x51 mm,M62 (Tracer),79,54,75,14
+7.62x51 mm,M61,70,68,83,13
+7.62x54R,T-46M (Tracer),82,41,83,18
+7.62x54R,LPS_Gzh,81,42,78,18
+7.62x54R,7N1,86,45,84,8
+7.62x54R,7BT1 (Tracer),78,59,87,8
+7.62x54R,SNB,75,62,87,8
+7.62x54R,7n37,72,70,88,8
+12.7x55 mm,ps12a,165,10,22,0
+12.7x55 mm,ps12,115,28,60,30
+12.7x55 mm,ps12b,102,46,57,30
+Mounted Weapons,30mm Grenade,199,1,95,0
+Mounted Weapons,12.7x108mm,182,88,88,17
+Mounted Weapons,12.7x108mm Tracer,199,80,95,17
