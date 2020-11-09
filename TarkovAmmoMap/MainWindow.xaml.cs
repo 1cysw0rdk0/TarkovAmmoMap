@@ -19,7 +19,8 @@ using LiveCharts.Defaults;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
 using System.Reflection;
-using System.Drawing;
+using Supremes;
+
 
 namespace TarkovAmmoMap {
 	/// <summary>
@@ -31,6 +32,8 @@ namespace TarkovAmmoMap {
 		public Dictionary<CaliberData, SolidColorBrush> DisplayData;
 		public Dictionary<string, int> HitPointData;
 		Random r = new Random();
+		public string[] ArmorClasses { get; set; }
+		public SeriesCollection SeriesCollection { get; set; }
 
 		public MainWindow() {
 			InitializeComponent();
@@ -38,27 +41,31 @@ namespace TarkovAmmoMap {
 			DisplayData = new Dictionary<CaliberData, SolidColorBrush>();
 			HitPointData = new Dictionary<string, int>();
 
+
 			// User Selects file
 
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			if (openFileDialog.ShowDialog() == true) {
-				ammo = ReadAmmoCSV(openFileDialog.FileName);
-			} else {
-				// Error Message?
+			//OpenFileDialog openFileDialog = new OpenFileDialog();
+			//if (openFileDialog.ShowDialog() == true) {
+			//	ammo = ReadAmmoCSV(openFileDialog.FileName);
+			//} else {
+			//	// Error Message?
+			//}
+
+			ammo = ReadAmmoWeb("https://escapefromtarkov.gamepedia.com/Ballistics");
+
+			if (ammo == null) {
+
 			}
 
-
-			// TODO //
 			HitPointData.Add("Head", 35);
-			HitPointData.Add("Thorax", 80);
+			HitPointData.Add("Thorax", 85);
 			HitPointData.Add("Stomach", 70);
 			HitPointData.Add("Legs", 65);
 			HitPointData.Add("Arms", 60);
 
 
 			// Add Bottom Check Boxes
-
-			foreach (String str in "Head Thorax Stomach Legs Arms".Split(' ')) {
+			foreach (String str in HitPointData.Keys) {
 				StackPanel newStack = new StackPanel();
 				newStack.Orientation = Orientation.Horizontal;
 
@@ -79,9 +86,14 @@ namespace TarkovAmmoMap {
 				TargetStack.Children.Add(newStack);
 			}
 
+			
+
+			// Prevent loading if no data present, i.e. no internet connection
+			if (ammo == null) {
+				return;
+			}
 
 			// Add all loaded caliber data sets
-
 			foreach (CaliberData cal in ammo.ammoDict.Values) {
 
 				// Select color for this caliber
@@ -124,8 +136,9 @@ namespace TarkovAmmoMap {
 	
 			}
 
-		}
 
+
+		}
 
 		private void RemoveVisualLine(object sender, RoutedEventArgs e) {
 			Axis axis = VisualChartDisplay.AxisX.ElementAt(0);
@@ -153,7 +166,6 @@ namespace TarkovAmmoMap {
 			VisualChartDisplay.AxisX[0].MinValue -= 1;
 			VisualChartDisplay.AxisX[0].MinValue += 1;
 		}
-
 
 		private SolidColorBrush PickBrush() {
 			int counter = 0;
@@ -211,60 +223,293 @@ namespace TarkovAmmoMap {
 
 		public void AddCaliberSet(CaliberData caliber) {
 			if (DisplayData.ContainsKey(caliber)) {
-
+		
 				// Add each shot as a series so I can choose its name
 				// Not a graceful solution but whatevs
 				foreach (ShotLoadData shot in caliber.ShotLoads) {
 				
 					ChartValues<ObservablePoint> newPoint = new ChartValues<ObservablePoint>();
 					ScatterSeries newSeries = new ScatterSeries();
-
-					newPoint.Add(new ObservablePoint(shot.FleshDamage, shot.PenetrationDamage));
+		
+					newPoint.Add(shot.fleshVsPen);
 					newSeries.Values = newPoint;
 					newSeries.Title = shot.VariantName;
 					DisplayData.TryGetValue(caliber, out SolidColorBrush temp);
 					newSeries.Fill = temp;
 					VisualChartDisplay.Series.Add(newSeries);
 
-				}			
+			}			
 
 			}
 		}
 
-		public AmmoDict ReadAmmoCSV(string filepath) {
-			AmmoDict ammoDict = new AmmoDict();
+		//public AmmoDict ReadAmmoCSV(string filepath) {
+		//	AmmoDict ammoDict = new AmmoDict();
 
-			using (StreamReader reader = new StreamReader(filepath)) {
-				while (!reader.EndOfStream) {
+		//	using (StreamReader reader = new StreamReader(filepath)) {
+		//		while (!reader.EndOfStream) {
 
-					string[] line = reader.ReadLine().Split(',');
-					ShotLoadData shot;
+		//			string[] line = reader.ReadLine().Split(',');
+		//			ShotLoadData shot;
 
-					if (int.TryParse(line[2], out int flesh) && 
-						int.TryParse(line[4], out int armor) && 
-						int.TryParse(line[3], out int pen) && 
-						int.TryParse(line[5], out int frag)) {
-						shot = new ShotLoadData(line[0], line[1], flesh, armor, pen, frag);
-					} else {
-						// Error Message?
-						continue;
-					}
+		//			if (int.TryParse(line[2], out int flesh) && 
+		//				int.TryParse(line[4], out int armor) && 
+		//				int.TryParse(line[3], out int pen) && 
+		//				int.TryParse(line[5], out int frag)) {
+		//				shot = new ShotLoadData(line[0], line[1], flesh, armor, pen, frag);
+		//			} else {
+		//				// Error Message?
+		//				continue;
+		//			}
 
-					if (!ammoDict.ContainsCalliber(shot.Caliber)) {
-						ammoDict.AddCaliber(new CaliberData(shot.Caliber));
-					}
+		//			// Adds caliber to ammoDict if it does not exist
+		//			if (!ammoDict.ContainsCalliber(shot.Caliber)) {
+		//				ammoDict.AddCaliber(new CaliberData(shot.Caliber));
+		//			}
 
-					ammoDict.ammoDict.TryGetValue(shot.Caliber, out CaliberData caliberData);
-					caliberData.AddShot(shot);
+		//			// Get the current caliber, then add the new shot to it
+		//			ammoDict.ammoDict.TryGetValue(shot.Caliber, out CaliberData caliberData);
+		//			caliberData.AddShot(shot);
 					
-				}
+		//		}
 
+		//	}
+
+		//	return ammoDict;
+		//}
+
+		public AmmoDict ReadAmmoWeb(string uri) {
+			// Declarations
+			AmmoDict ammoDict = new AmmoDict();
+			Uri ballisticsURI = new Uri(uri);
+
+			// Load webpage into parser
+			Supremes.Nodes.Document ammoPage;
+			try {
+				ammoPage = Dcsoup.Parse(ballisticsURI, 5000);
+			} catch(Exception e) {
+				return null;
 			}
 
+			// Navigate to the table tag
+			// TODO kinda jank, fix maybe?
+			Supremes.Nodes.Element globalWrapper = ammoPage.Body.Children.ElementAt(2);
+			Supremes.Nodes.Element pageWrapper = globalWrapper.Children.ElementAt(2);
+			Supremes.Nodes.Element content = pageWrapper.Children.ElementAt(0);
+			Supremes.Nodes.Element bodyContent = content.Children.ElementAt(4);
+			Supremes.Nodes.Element contentText = bodyContent.Children.ElementAt(3);
+			Supremes.Nodes.Element parserOutput = contentText.Children.ElementAt(1);
+			Supremes.Nodes.Element table = parserOutput.Children.ElementAt(31).Children.ElementAt(0);
+
+			// Prep to parse relevant data
+			//   rowCounter keeps track of number of rows by caliber
+			//     reference the rowspan="16" to set counter, then the next ?15-16? rows are of that caliber
+			//   rows is an IList containing the rows of the table INCLUDES THE LEFT COLUMN
+			int offset = 3;
+			int rowCounter = 0;
+			Supremes.Nodes.Elements rows = table.Children;
+
+			// Parse all relevant data
+			//   if rowCounter is 0, set up new caliber set
+			//   parse fields from table
+			//   setup objects and add to dict
+			//     reference ReadAmmoCSV
+
+			string currentCaliber = "";
+			foreach (Supremes.Nodes.Element row in rows) {
+
+				// Skip the table header
+				if (offset > 0) {
+					offset -= 1;
+					continue;
+				}
+
+				// First of the caliber set, requires special parsing
+				if (rowCounter == 0) {
+					rowCounter -= 1;
+
+					// Set rowCounter to the rowspan of the first element, which should be the caliber name
+					if (row.Children.ElementAt(0).Attributes.Count > 0) {
+						rowCounter = int.Parse(row.Children.ElementAt(0).Attributes.ElementAt(0).Value) - 1;
+					} else {
+						rowCounter = 0;
+					}
+
+					// Navigate to the a tag inside the rowspan and get its text value, which should be the caliber name
+					//Supremes.Nodes.Element caliberData = row.Children.ElementAt(0).Children.ElementAt(0);
+					Supremes.Nodes.Element caliberData = row.Children.ElementAt(0);
+					currentCaliber = caliberData.Text;
+
+					// Add the caliber name as a string to the addmoDict
+					ammoDict.AddCaliber(new CaliberData(currentCaliber));
+
+					//System.Console.Out.WriteLine("Found Caliber: " + currentCaliber);
+					string variant = row.Children.ElementAt(1).Children.ElementAt(0).OwnText;
+
+					// Parse Flesh Damage
+					string fleshS = row.Children.ElementAt(2).OwnText;
+					int flesh = -1;
+					if (fleshS.Contains('x')) {
+						flesh = int.Parse(row.Children.ElementAt(2).Attributes.ElementAt(0).Value);
+					} else {
+						flesh = int.Parse(fleshS);
+					}
+
+					// Parse Armor Damage %
+					int armor = int.Parse(row.Children.ElementAt(4).OwnText);
+
+					// Parse Armor Pen
+					int pen = int.Parse(row.Children.ElementAt(3).OwnText);
+
+					// Parse Acc Adjustment
+					int acc = 0;
+					string accS = row.Children.ElementAt(5).Text;
+					if (accS != "") {
+						if (accS.Contains('+')) {
+							acc = int.Parse(accS.Replace('+', ' '));
+						} else {
+							acc = int.Parse(accS.Replace('-', ' ')) * -1;
+						}
+					}
+
+					// Parse Rec Adjustment
+					int rec = 0;
+					string recS = row.Children.ElementAt(6).Text;
+					if (recS != "") {
+						if (recS.Contains('+')) {
+							rec = int.Parse(recS.Replace('+', ' '));
+						} else {
+							rec = int.Parse(recS.Replace('-', ' ')) * -1;
+						}
+					}
+					
+					// Parse frag chance
+					int frag = int.Parse(row.Children.ElementAt(7).OwnText.Replace('%', ' ').Trim());
+
+					// Parse pen effectiveness in order
+					int c1 = int.Parse(row  .Children.ElementAt(8).OwnText);
+					int c2 = int.Parse(row.Children.ElementAt(9).OwnText);
+					int c3 = int.Parse(row.Children.ElementAt(10).OwnText);
+					int c4 = int.Parse(row.Children.ElementAt(11).OwnText);
+					int c5 = int.Parse(row.Children.ElementAt(12).OwnText);
+					int c6 = int.Parse(row.Children.ElementAt(13).OwnText);
+
+
+					ShotLoadData shot = new ShotLoadData(currentCaliber, variant, flesh, armor, pen, frag, acc, rec, c1, c2, c3, c4, c5, c6);
+
+					ammoDict.ammoDict.TryGetValue(shot.Caliber, out CaliberData caliber);
+					caliber.AddShot(shot);
+
+
+				} else {
+					rowCounter -= 1;
+
+					// Handles all other entries
+					string variant = row.Children.ElementAt(0).Children.ElementAt(0).OwnText;
+
+					// Parse Flesh Damage
+					string fleshS = row.Children.ElementAt(1).OwnText;
+					int flesh = -1;
+					if (fleshS.Contains('x')) {
+						flesh = int.Parse(row.Children.ElementAt(1).Attributes.ElementAt(0).Value);
+					} else {
+						flesh = int.Parse(fleshS);
+					}
+
+					// Parse Armor Damage %
+					int armor = int.Parse(row.Children.ElementAt(3).OwnText);
+
+					// Parse Armor Pen
+					int pen = int.Parse(row.Children.ElementAt(2).OwnText);
+
+					// Parse frag chance
+					int frag = int.Parse(row.Children.ElementAt(6).OwnText.Replace('%', ' ').Trim());
+
+					// Parse Acc Adjustment
+					int acc = 0;
+					string accS = row.Children.ElementAt(4).Text;
+					if (accS != "") {
+						if (accS.Contains('+')) {
+							acc = int.Parse(accS.Replace('+', ' '));
+						} else {
+							acc = int.Parse(accS.Replace('-', ' ')) * -1;
+						}
+					}
+
+					// Parse Rec Adjustment
+					int rec = 0;
+					string recS = row.Children.ElementAt(5).Text;
+					if (recS != "") {
+						if (recS.Contains('+')) {
+							rec = int.Parse(recS.Replace('+', ' '));
+						} else {
+							rec = int.Parse(recS.Replace('-', ' ')) * -1;
+						}
+					}
+
+					// Parse pen effectiveness in order
+					int c1 = int.Parse(row.Children.ElementAt(7).OwnText);
+					int c2 = int.Parse(row.Children.ElementAt(8).OwnText);
+					int c3 = int.Parse(row.Children.ElementAt(9).OwnText);
+					int c4 = int.Parse(row.Children.ElementAt(10).OwnText);
+					int c5 = int.Parse(row.Children.ElementAt(11).OwnText);
+					int c6 = int.Parse(row.Children.ElementAt(12).OwnText);
+
+					ShotLoadData shot = new ShotLoadData(currentCaliber, variant, flesh, armor, pen, frag, acc, rec, c1, c2, c3, c4, c5, c6);
+
+					ammoDict.ammoDict.TryGetValue(shot.Caliber, out CaliberData caliber);
+					caliber.AddShot(shot);
+				}
+			}
 			return ammoDict;
 		}
 
+		private void VisualChartDisplay_DataClick(object sender, ChartPoint chartPoint) {
+			// Get the name of shotload  
+			// chartPoint.SeriesView.Title
+			Grid.SetColumnSpan(VisualChartDisplay, 1);
+			
+			
+			
+			foreach (CaliberData caliberSet in ammo.ammoDict.Values) {
+				foreach (ShotLoadData shot in caliberSet.ShotLoads) {
+					if (shot.VariantName == chartPoint.SeriesView.Title) {
+						//System.Console.Out.WriteLine("Found " + shot.VariantName);
+						DetailName.Content = shot.VariantName;
+						DetailsFleshDamage.Value = shot.FleshDamage;
+						DetailsArmorPen.Value = shot.PenetrationDamage;
+						DetailsArmorDam.Value = shot.ArmorDamage;
 
+						// TODO Remove when BSG fixes <20 pen frag bug
+						if (shot.PenetrationDamage >= 20) {
+							DetailsFragChance.Value = shot.FragChance;
+						} else {
+							DetailsFragChance.Value = 0;
+						}
+
+						PenDisplayTitle.Content = shot.VariantName + " v. Armor";
+
+						PenDisplayChart.AxisY.ElementAt(0).Labels = new[] { "Class 6", "Class 5", "Class 4", "Class 3", "Class 2", "Class 1", };
+
+
+						PenDisplayChart.Series =  new SeriesCollection {
+							new RowSeries {
+								Title = shot.VariantName,
+								Values = new ChartValues<int> { shot.Class6, shot.Class5, shot.Class4, shot.Class3, shot.Class2, shot.Class1 }
+							}
+						};
+					}
+				}
+			}
+
+			DetailsGrid.Visibility = Visibility.Visible;
+		}
+
+
+
+
+
+		/* End of Implementation */
 		/* Data Types */
 
 		public class ShotLoadData {
@@ -274,17 +519,35 @@ namespace TarkovAmmoMap {
 			public int ArmorDamage { get; }
 			public int PenetrationDamage { get; }
 			public int FragChance { get; }
+			public int Accuracy { get; }
+			public int Recoil { get; }
+
+			public int Class1 { get; }
+			public int Class2 { get; }
+			public int Class3 { get; }
+			public int Class4 { get; }
+			public int Class5 { get; }
+			public int Class6 { get; }
 			public int AvgPrice { get; }
 
 			public ObservablePoint fleshVsPen;
 
-			public ShotLoadData(string caliber, string variant, int flesh, int armor, int pen, int frag) {
+			public ShotLoadData(string caliber, string variant, int flesh, int armor, int pen, int frag, int acc, int rec, int c1, int c2, int c3, int c4, int c5, int c6) {
 				this.Caliber = caliber;
 				this.VariantName = variant;
 				this.FleshDamage = flesh;
 				this.ArmorDamage = armor;
 				this.PenetrationDamage = pen;
 				this.FragChance = frag;
+
+				this.Accuracy = acc;
+				this.Recoil = rec;
+				this.Class1 = c1;
+				this.Class2 = c2;
+				this.Class3 = c3;
+				this.Class4 = c4;
+				this.Class5 = c5;
+				this.Class6 = c6;
 
 				fleshVsPen = new ObservablePoint(flesh, pen);
 			}
@@ -323,6 +586,18 @@ namespace TarkovAmmoMap {
 			public bool ContainsCalliber(string name) => this.ammoDict.ContainsKey(name);
 		}
 
-		
+		private void Reset_Click(object sender, RoutedEventArgs e) {
+			VisualChartDisplay.AxisX[0].MinValue = 0;
+			VisualChartDisplay.AxisX[0].MaxValue = 250;
+			VisualChartDisplay.AxisY[0].MinValue = 0;
+			VisualChartDisplay.AxisY[0].MaxValue = 90;
+		}
+
+		private void Toggle_All(object sender, RoutedEventArgs e) {
+			foreach (StackPanel caliber in SelectStack.Children) {
+				((CheckBox)caliber.Children[0]).IsChecked = !((CheckBox)caliber.Children[0]).IsChecked;
+			}
+		}
+
 	}
 }
